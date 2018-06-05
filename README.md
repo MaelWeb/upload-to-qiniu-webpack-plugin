@@ -36,9 +36,9 @@ module.exports = {
   },
   plugins: [
     new UploadToQiniuWebpackPlugin({
-        qiniuAccessKey: 'ARA9LIvdx3JFZyADmwohmEMyjVLmNSIjVxgpzIA4',
-        qiniuSecretKey: 'aK19LEtOfStwsvn501Pl_h_wTqkVFnbzxlI5FNU7',
-        qiniuBucket: 'hynal-static-test',
+        qiniuAccessKey: 'ARA9LIvdx3JFZyADmwohmNSIjVxgpzIA4',
+        qiniuSecretKey: 'aK19LEtOfStwsvn5TqkVFnbzxlI5FNU7',
+        qiniuBucket: 'bucket-test',
         qiniuZone: 'Zone_z0',
     })
   ]
@@ -57,3 +57,11 @@ Allowed values are as follows
 |**[`qiniuBucket`](#)**|`{String}`|``| Your Qiniu Bucket Name |
 |**[`qiniuZone`](#)**|`{String}`|``| Your Qiniu zone code |
 |**[`enabledRefresh`](#)**|`{Boolean}`|`false`| Is enable refresh the file on Qiniu Clound after file upload|
+
+About [Zone](https://developer.qiniu.com/kodo/sdk/1289/nodejs):
+|Name|value|
+|:--:|:----------|
+|**[`华东`](#)**| "Zone_z0" |
+|**[`华北`](#)**| "Zone_z1" |
+|**[`华南`](#)**| "Zone_z2" |
+|**[`北美`](#)**| "Zone_na0" |
