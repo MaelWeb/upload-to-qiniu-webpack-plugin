@@ -12,11 +12,11 @@
 <h2 align="center">Install</h2>
 
 ```bash
-  npm i --save-dev html-webpack-plugin
+  npm i --save-dev upload-to-qiniu-webpack-plugin
 ```
 
 <!-- ```bash
-  yarn add --dev html-webpack-plugin
+  yarn add --dev upload-to-qiniu-webpack-plugin
 ``` -->
 
 
