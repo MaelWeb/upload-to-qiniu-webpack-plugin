@@ -1,0 +1,5 @@
+/node_modules/
+/dist/
+npm-debug.log
+success_upload_log.json
+faile_upload_log.json
