@@ -59,6 +59,7 @@ Allowed values are as follows
 |**[`enabledRefresh`](#)**|`{Boolean}`|`false`| Is enable refresh the file on Qiniu Clound after file upload|
 
 About [Zone](https://developer.qiniu.com/kodo/sdk/1289/nodejs):
+
 |Name|value|
 |:--:|:----------|
 |**[`华东`](#)**| "Zone_z0" |
