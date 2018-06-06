@@ -52,13 +52,13 @@ Allowed values are as follows
 
 |Name|Type|Default|Description|
 |:--:|:--:|:-----:|:----------|
-|**[`qiniuAccessKey`](#)**|`{String}`|``| Your Qiniu AccessKey |
-|**[`qiniuSecretKey`](#)**|`{String}`|``| Your Qiniu SecretKey |
-|**[`qiniuBucket`](#)**|`{String}`|``| Your Qiniu Bucket Name |
-|**[`qiniuZone`](#)**|`{String}`|``| Your Qiniu zone code |
+|**[`qiniuAccessKey`](#)**|`{String}`|`null`| Your Qiniu AccessKey |
+|**[`qiniuSecretKey`](#)**|`{String}`|`null`| Your Qiniu SecretKey |
+|**[`qiniuBucket`](#)**|`{String}`|`null`| Your Qiniu Bucket Name |
+|**[`qiniuZone`](#)**|`{String}`|`null`| Your Qiniu zone code |
 |**[`enabledRefresh`](#)**|`{Boolean}`|`false`| Is enable refresh the file on Qiniu Clound after file upload|
-|**[`uploadLogPath`](#)**|`{String}`|[webpackConfig.context]| Is enable refresh the file on Qiniu Clound after file upload|
-|**[`uploadTaget`](#)**|`{String}`|[webpackConfig.output.publicPath]| Is enable refresh the file on Qiniu Clound after file upload|
+|**[`uploadLogPath`](#)**|`{String}`|[webpackConfig.context](https://webpack.js.org/configuration/entry-context/#context)| The target file/folder to upload |
+|**[`uploadTaget`](#)**|`{String}`|[webpackConfig.output.path](https://webpack.js.org/configuration/output/#output-path)| Provide a directory where log file should be stored|
 
 About [Zone](https://developer.qiniu.com/kodo/sdk/1289/nodejs):
 
