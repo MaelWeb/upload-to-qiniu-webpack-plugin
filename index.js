@@ -26,7 +26,8 @@ class UploadToQiniuWebpackPlugin {
             uploadTaget: null, // targe to upload
             exclude: 'html', // Todo
             publicPath: '',
-            enabledRefresh: false
+            enabledRefresh: false,
+            uploadLogPath: null,
         }, options);
 
         this.config = new qiniu.conf.Config();
@@ -49,14 +50,6 @@ class UploadToQiniuWebpackPlugin {
         this.uploadCount = 0;
         this.fileCount = 0;
 
-        try {
-            let statInstance = fs.statSync(path.resolve(successUnloadLog));
-            if (statInstance.isFile()) {
-                this.successUploadFilesData = JSON.parse(fs.readFileSync(successUnloadLog, 'utf8'));
-                console.log(this.successUploadFilesData);
-            }
-        } catch (err) {}
-
     }
 
     apply(compiler) {
@@ -69,6 +62,18 @@ class UploadToQiniuWebpackPlugin {
         if (!_this.options.publicPath) {
             _this.options.publicPath = compiler.options.output.publicPath;
         }
+
+        if (!_this.options.uploadLogPath ) {
+            _this.options.uploadLogPath = compiler.options.context;
+        }
+
+        try {
+            let statInstance = fs.statSync(path.resolve(_this.options.uploadLogPath, successUnloadLog));
+            if (statInstance.isFile()) {
+                this.successUploadFilesData = JSON.parse(fs.readFileSync(successUnloadLog, 'utf8'));
+                console.log(this.successUploadFilesData);
+            }
+        } catch (err) {}
 
         (compiler.hooks ? compiler.hooks.done.tapAsync.bind(compiler.hooks.done, 'UploadToQiniuWebpackPlugin') : compiler.plugin.bind(compiler, 'done'))((stats, callback) => {
             callback();
@@ -182,14 +187,14 @@ class UploadToQiniuWebpackPlugin {
             for (let key in this.failedObj.uploadFiles) {
                 delete this.successUploadLogData[key]
             }
-            fs.writeFile(path.resolve(failedUploadLog), JSON.stringify(this.failedObj), 'utf8', (err) => {
+            fs.writeFile(path.resolve(this.options.uploadLogPath, failedUploadLog), JSON.stringify(this.failedObj), 'utf8', (err) => {
                 if (err) {
                     console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Error:', err)
                 }
 
             });
         }
-        fs.writeFile(path.resolve(successUnloadLog), JSON.stringify(this.successUploadLogData), 'utf8', (err) => {
+        fs.writeFile(path.resolve(this.options.uploadLogPath, successUnloadLog), JSON.stringify(this.successUploadLogData), 'utf8', (err) => {
             if (err) {
                 console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Unload File Log  Write Failed')
             }

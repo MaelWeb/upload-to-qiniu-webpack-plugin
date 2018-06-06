@@ -57,6 +57,8 @@ Allowed values are as follows
 |**[`qiniuBucket`](#)**|`{String}`|``| Your Qiniu Bucket Name |
 |**[`qiniuZone`](#)**|`{String}`|``| Your Qiniu zone code |
 |**[`enabledRefresh`](#)**|`{Boolean}`|`false`| Is enable refresh the file on Qiniu Clound after file upload|
+|**[`uploadLogPath`](#)**|`{String}`|[webpackConfig.context]| Is enable refresh the file on Qiniu Clound after file upload|
+|**[`uploadTaget`](#)**|`{String}`|[webpackConfig.output.publicPath]| Is enable refresh the file on Qiniu Clound after file upload|
 
 About [Zone](https://developer.qiniu.com/kodo/sdk/1289/nodejs):
 

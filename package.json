@@ -13,7 +13,9 @@
   "keywords": [
     "webpack",
     "plugin",
-    "qiniu"
+    "qiniu",
+    "upload",
+    "upload-to-qiniu-webpack-plugin"
   ],
   "author": "Mael.Lia",
   "license": "MIT",
