@@ -1,5 +1,3 @@
-> This project is developing now.
-
 <div align="center">
   <a href="https://github.com/webpack/webpack">
     <img width="200" height="200"
