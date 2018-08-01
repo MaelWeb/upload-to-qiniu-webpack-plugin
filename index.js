@@ -71,7 +71,6 @@ class UploadToQiniuWebpackPlugin {
             let statInstance = fs.statSync(path.resolve(_this.options.uploadLogPath, successUnloadLog));
             if (statInstance.isFile()) {
                 this.successUploadFilesData = JSON.parse(fs.readFileSync(path.resolve(_this.options.uploadLogPath, successUnloadLog), 'utf8'));
-                console.log(this.successUploadFilesData);
             }
         } catch (err) {}
 
