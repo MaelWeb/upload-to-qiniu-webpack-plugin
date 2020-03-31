@@ -55,6 +55,7 @@ Allowed values are as follows
 |**[`qiniuBucket`](#)**|`{String}`|`null`| Your Qiniu Bucket Name |
 |**[`qiniuZone`](#)**|`{String}`|`null`| Your Qiniu zone code |
 |**[`enabledRefresh`](#)**|`{Boolean}`|`false`| Is enable refresh the file on Qiniu Clound after file upload|
+|**[`prefixPath`](#)**|`{String}`| - | prefix path for the file |
 |**[`uploadLogPath`](#)**|`{String}`|[webpackConfig.context](https://webpack.js.org/configuration/entry-context/#context)|  Provide a directory where log file should be stored |
 |**[`uploadTaget`](#)**|`{String}`|[webpackConfig.output.path](https://webpack.js.org/configuration/output/#output-path)|The target file/folder to upload|
 

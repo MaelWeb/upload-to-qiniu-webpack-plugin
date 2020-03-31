@@ -18,6 +18,7 @@ module.exports = {
             qiniuSecretKey: 'aK19LEtOfStwsvn501Pl_h_wTqkVFnbzxlI5FNU7',
             qiniuBucket: 'hynal-static-test',
             qiniuZone: 'Zone_z0',
+            prefixPath: 'test/Prefix/'
         })
     ]
 };

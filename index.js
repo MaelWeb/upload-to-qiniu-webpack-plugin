@@ -28,6 +28,7 @@ class UploadToQiniuWebpackPlugin {
             publicPath: '',
             enabledRefresh: false,
             uploadLogPath: null,
+            prefixPath: '',
         }, options);
 
         this.config = new qiniu.conf.Config();
@@ -230,7 +231,7 @@ class UploadToQiniuWebpackPlugin {
         arr.forEach((path) => {
 
             let filePath = path,
-                key = path.replace(this.options.uploadTaget + '/', ''),
+                key = path.replace(this.options.uploadTaget + '/', this.options.prefixPath),
                 token = this.getToken(this.options.qiniuBucket, key);
 
             this.uploadFile(token, key, filePath);
