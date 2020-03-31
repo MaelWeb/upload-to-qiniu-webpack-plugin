@@ -173,7 +173,7 @@ class UploadToQiniuWebpackPlugin {
                     }
                 }
                 _this.writeLog()
-                _this.options.enabledRefresh && _this.refreshCDN(needUpload);
+                _this.options.enabledRefresh && _this.refreshCDN(this.needUploadArray || []);
             });
         } else {
             console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'There Is Not Have Extra File Need To Delete');
