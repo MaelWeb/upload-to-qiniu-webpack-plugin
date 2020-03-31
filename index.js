@@ -173,7 +173,7 @@ class UploadToQiniuWebpackPlugin {
                     }
                 }
                 _this.writeLog()
-                _this.options.enabledRefresh && _this.refreshCDN(_this.needUploadArray || []);
+                _this.options.enabledRefresh && _this.refreshInClound(_this.needUploadArray || []);
             });
         } else {
             console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'There Is Not Have Extra File Need To Delete');
@@ -204,24 +204,25 @@ class UploadToQiniuWebpackPlugin {
 
     refreshInClound(needRefreshArr) {
         let cdnManager = new qiniu.cdn.CdnManager(this.mac);
+        const _this = this
         //  Can refresh 100 one time
         needRefreshArr = _array.chunk(needRefreshArr, 100);
         needRefreshArr.forEach((item, index) => {
             item = item.map((it) => {
-                return this.options.publicPath + it.replace(this.options.path + '/', '')
+                return this.options.publicPath +  it.replace(this.options.uploadTaget + '/', this.options.prefixPath)
             });
 
             cdnManager.refreshUrls(item, function (err, respBody, respInfo) {
                 if (err) {
-                    this.allRefreshIsSuccess = false
-                    this.failedObj.refreshArr = this.failedObj.refreshArr.concat(item.map(it => it.replace(this.options.publicPath, '')))
+                    _this.allRefreshIsSuccess = false
+                    _this.failedObj.refreshArr = _this.failedObj.refreshArr.concat(item.map(it.replace(_this.options.uploadTaget + '/', _this.options.prefixPath)))
                 }
                 if (respInfo.statusCode == 200) {
-                    // let jsonBody = JSON.parse(respBody);
-                    // console.log(jsonBody);
+                    let jsonBody = JSON.parse(respBody);
+                    console.log(jsonBody);
                 }
                 if (index === needRefreshArr.length - 1) {
-                    this.writeLog()
+                    _this.writeLog()
                 }
             });
         })
