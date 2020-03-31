@@ -24,7 +24,7 @@ class UploadToQiniuWebpackPlugin {
             qiniuBucket: 'qiniuBucket',
             qiniuZone: 'Zone_z0',
             uploadTaget: null, // targe to upload
-            exclude: 'html', // Todo
+            excludeHtml: true,
             publicPath: '',
             enabledRefresh: false,
             uploadLogPath: null,
@@ -64,7 +64,7 @@ class UploadToQiniuWebpackPlugin {
             _this.options.publicPath = compiler.options.output.publicPath;
         }
 
-        if (!_this.options.uploadLogPath ) {
+        if (!_this.options.uploadLogPath) {
             _this.options.uploadLogPath = compiler.options.context;
         }
 
@@ -78,7 +78,7 @@ class UploadToQiniuWebpackPlugin {
         (compiler.hooks ? compiler.hooks.done.tapAsync.bind(compiler.hooks.done, 'UploadToQiniuWebpackPlugin') : compiler.plugin.bind(compiler, 'done'))((stats, callback) => {
             callback();
 
-            console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]','Starting upload files to Qiniu clound ');
+            console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Starting upload files to Qiniu clound ');
 
             _this.readFilesFormDir(_this.options.uploadTaget).then((paths) => {
                 _this.fileCount = paths.length;
@@ -150,13 +150,13 @@ class UploadToQiniuWebpackPlugin {
             })
             console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', `Deleting ${successDtaKeys.length} Files on CDN`);
 
-            bucketManager.batch(deleteOperations, function(err, respBody, respInfo) {
+            bucketManager.batch(deleteOperations, function (err, respBody, respInfo) {
                 if (err) {
                     console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Deleting Files Error: ', err);
                 } else {
                     // 200 is success, 298 is part success
                     if (parseInt(respInfo.statusCode / 100) == 2) {
-                        respBody.forEach(function(item) {
+                        respBody.forEach(function (item) {
                             if (item.code !== 200) {
                                 allFileIsSuccess = false
                                 console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', item);
@@ -211,7 +211,7 @@ class UploadToQiniuWebpackPlugin {
                 return this.options.publicPath + it.replace(this.options.path + '/', '')
             });
 
-            cdnManager.refreshUrls(item, function(err, respBody, respInfo) {
+            cdnManager.refreshUrls(item, function (err, respBody, respInfo) {
                 if (err) {
                     this.allRefreshIsSuccess = false
                     this.failedObj.refreshArr = this.failedObj.refreshArr.concat(item.map(it => it.replace(this.options.publicPath, '')))
@@ -248,8 +248,12 @@ class UploadToQiniuWebpackPlugin {
                     return [].concat(...paths)
                 })
                 ret = ret || []
-            } else if (stats.isFile() && !/\.html$/.test(dir)) {
-                ret = dir
+            } else if (stats.isFile()) {
+                if (!this.options.excludeHtml) {
+                    ret = dir
+                } else {
+                    !/\.html$/.test(dir) ? (ret = dir) : (ret = [])
+                }
             } else {
                 ret = []
             }
