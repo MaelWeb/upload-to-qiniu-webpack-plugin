@@ -91,9 +91,20 @@
   !*** ./example.js ***!
   \********************/
 /*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("__webpack_require__(/*! ./main.js */ \"./main.js\");\nvar h1 = document.createElement('h1');\nh1.innerHTML = 'Hello world!';\ndocument.body.appendChild(h1);\n\n\n//# sourceURL=webpack:///./example.js?");
+
+/***/ }),
+
+/***/ "./main.js":
+/*!*****************!*\
+  !*** ./main.js ***!
+  \*****************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("// require('./main.css');\nvar h1 = document.createElement('h1');\nh1.innerHTML = 'Hello world!';\ndocument.body.appendChild(h1);\n\n\n//# sourceURL=webpack:///./example.js?");
+eval("console.log('main.js')\n\n//# sourceURL=webpack:///./main.js?");
 
 /***/ })
 
