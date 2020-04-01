@@ -178,6 +178,7 @@ class UploadToQiniuWebpackPlugin {
         } else {
             console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'There Is Not Have Extra File Need To Delete');
             this.writeLog()
+            this.options.enabledRefresh && this.refreshInClound(this.needUploadArray || []);
         }
 
     }
@@ -209,17 +210,18 @@ class UploadToQiniuWebpackPlugin {
         needRefreshArr = _array.chunk(needRefreshArr, 100);
         needRefreshArr.forEach((item, index) => {
             item = item.map((it) => {
-                return this.options.publicPath +  it.replace(this.options.uploadTaget + '/', this.options.prefixPath)
+                return this.options.publicPath +  it.replace(this.options.uploadTaget + '/', '')
             });
-
             cdnManager.refreshUrls(item, function (err, respBody, respInfo) {
                 if (err) {
                     _this.allRefreshIsSuccess = false
-                    _this.failedObj.refreshArr = _this.failedObj.refreshArr.concat(item.map(it.replace(_this.options.uploadTaget + '/', _this.options.prefixPath)))
+                    _this.failedObj.refreshArr = _this.failedObj.refreshArr.concat(item.map(it.replace(_this.options.uploadTaget + '/', '')))
+                    console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Failed')
                 }
                 if (respInfo.statusCode == 200) {
-                    let jsonBody = JSON.parse(respBody);
-                    console.log(jsonBody);
+                    // let jsonBody = JSON.parse(respBody);
+                    // console.log(jsonBody);
+                    console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Successful')
                 }
                 if (index === needRefreshArr.length - 1) {
                     _this.writeLog()
