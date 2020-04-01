@@ -9,6 +9,7 @@ const moment = require('moment');
 const _array = require('lodash/array');
 const _difference = require('lodash/difference');
 const _extend = require('lodash/extend');
+const hidefile = require('hidefile')
 
 const fsStatPromise = promisify(fs.stat);
 const fsReadDirPromise = promisify(fs.readdir);
@@ -135,7 +136,7 @@ class UploadToQiniuWebpackPlugin {
 
     dealFileInClound() {
         let _this = this;
-        this.allUploadIsSuccess && console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'All File Is Upload Successful');
+        this.allUploadIsSuccess && console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'All File Is Upload Successful \r\n');
 
         let bucketManager = new qiniu.rs.BucketManager(this.mac, this.config),
             successDtaKeys = Object.keys(this.successUploadFilesData),
@@ -148,7 +149,7 @@ class UploadToQiniuWebpackPlugin {
             successDtaKeys.forEach((key) => {
                 deleteOperations.push(qiniu.rs.deleteOp(this.options.qiniuBucket, key))
             })
-            console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', `Deleting ${successDtaKeys.length} Files on CDN`);
+            console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', `Deleting ${successDtaKeys.length} Files on CDN \r\n`);
 
             bucketManager.batch(deleteOperations, function (err, respBody, respInfo) {
                 if (err) {
@@ -159,13 +160,13 @@ class UploadToQiniuWebpackPlugin {
                         respBody.forEach(function (item) {
                             if (item.code !== 200) {
                                 allFileIsSuccess = false
-                                console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', item);
+                                console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', item, '\r\n');
                             }
                         });
                         if (allFileIsSuccess) {
-                            console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'All Extra File Is Deleted Form QiniuCloud Successful')
+                            console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'All Extra File Is Deleted Form QiniuCloud Successful\r\n')
                         } else {
-                            console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Some Deleted is Failed')
+                            console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Some Deleted is Failed\r\n')
                         }
                     } else {
                         // console.log(respInfo.deleteusCode);
@@ -176,7 +177,7 @@ class UploadToQiniuWebpackPlugin {
                 _this.options.enabledRefresh && _this.refreshInClound(_this.needUploadArray || []);
             });
         } else {
-            console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'There Is Not Have Extra File Need To Delete');
+            console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'There Is Not Have Extra File Need To Delete\r\n');
             this.writeLog()
             this.options.enabledRefresh && this.refreshInClound(this.needUploadArray || []);
         }
@@ -190,14 +191,14 @@ class UploadToQiniuWebpackPlugin {
             }
             fs.writeFile(path.resolve(this.options.uploadLogPath, failedUploadLog), JSON.stringify(this.failedObj), 'utf8', (err) => {
                 if (err) {
-                    console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Error:', err)
+                    console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Error:', err, '\r\n')
                 }
 
             });
         }
         fs.writeFile(path.resolve(this.options.uploadLogPath, successUnloadLog), JSON.stringify(this.successUploadLogData), 'utf8', (err) => {
             if (err) {
-                console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Unload File Log  Write Failed')
+                console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Unload File Log  Write Failed\r\n')
             }
         });
 
@@ -210,18 +211,18 @@ class UploadToQiniuWebpackPlugin {
         needRefreshArr = _array.chunk(needRefreshArr, 100);
         needRefreshArr.forEach((item, index) => {
             item = item.map((it) => {
-                return this.options.publicPath +  it.replace(this.options.uploadTaget + '/', '')
+                return this.options.publicPath + it.replace(this.options.uploadTaget + '/', '')
             });
             cdnManager.refreshUrls(item, function (err, respBody, respInfo) {
                 if (err) {
                     _this.allRefreshIsSuccess = false
                     _this.failedObj.refreshArr = _this.failedObj.refreshArr.concat(item.map(it.replace(_this.options.uploadTaget + '/', '')))
-                    console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Failed')
+                    console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Failed\r\n')
                 }
                 if (respInfo.statusCode == 200) {
                     // let jsonBody = JSON.parse(respBody);
                     // console.log(jsonBody);
-                    console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Successful')
+                    console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Successful\r\n')
                 }
                 if (index === needRefreshArr.length - 1) {
                     _this.writeLog()
@@ -244,6 +245,8 @@ class UploadToQiniuWebpackPlugin {
     readFilesFormDir(dir) {
         return fsStatPromise(dir).then((stats) => {
             let ret;
+            if (hidefile.isHiddenSync(dir)) return []
+
             if (stats.isDirectory()) {
                 ret = fsReadDirPromise(dir).then((files) => {
                     return Promise.all(files.map(file => this.readFilesFormDir(dir + '/' + file)))

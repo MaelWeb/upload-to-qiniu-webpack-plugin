@@ -1,6 +1,6 @@
 {
   "name": "upload-to-qiniu-webpack-plugin",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A plugin upload file to qiniu clound for webpack",
   "main": "index.js",
   "scripts": {
@@ -28,6 +28,7 @@
     "webpack-command": "^0.2.0"
   },
   "dependencies": {
+    "hidefile": "^3.0.0",
     "lodash": ">=4.17.11",
     "moment": "^2.22.2",
     "qiniu": "^7.1.7",
