@@ -233,7 +233,8 @@ class UploadToQiniuWebpackPlugin {
                     console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Failed\r\n')
 
                     if(_this.options.onlyRefreshHtml){
-                        throw new Error(err)
+                        // throw new Error(err)
+                        process.exit(1) // 操作系统发送退出码（强制终止），返回零时才会继续，任何非零退出代码Jenkins将判定为部署失败。
                     }
                 }
                 if (respInfo.statusCode == 200) {
