@@ -28,6 +28,7 @@ class UploadToQiniuWebpackPlugin {
             excludeHtml: true,
             publicPath: '',
             enabledRefresh: false,
+            onlyRefreshHtml: false,
             uploadLogPath: null,
             prefixPath: '',
         }, options);
@@ -52,6 +53,7 @@ class UploadToQiniuWebpackPlugin {
         this.uploadCount = 0;
         this.fileCount = 0;
 
+        this.callback = null;
     }
 
     apply(compiler) {
@@ -77,7 +79,7 @@ class UploadToQiniuWebpackPlugin {
         } catch (err) {}
 
         (compiler.hooks ? compiler.hooks.done.tapAsync.bind(compiler.hooks.done, 'UploadToQiniuWebpackPlugin') : compiler.plugin.bind(compiler, 'done'))((stats, callback) => {
-            callback();
+            _this.callback = callback.bind(this);
 
             console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Starting upload files to Qiniu clound ');
 
@@ -86,13 +88,13 @@ class UploadToQiniuWebpackPlugin {
 
                 console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', `Comparing ${_this.fileCount} files...`);
 
-                paths.forEach((path) => {
-                    let key = path.match(new RegExp('^' + _this.options.uploadTaget + '[/](.*)$'))[1];
+                paths.forEach(item => {
+                    let key = path.relative(_this.options.uploadTaget, item);
                     if (_this.successUploadFilesData[key]) {
                         delete _this.successUploadFilesData[key]
                     }
                     _this.successUploadLogData[key] = new moment().format('YYYY-MM-DD HH:mm:ss');
-                    _this.needUploadArray.push(path)
+                    _this.needUploadArray.push(item)
 
                     if (_this.needUploadArray.length == _this.fileCount) {
                         console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', `Uploading ${_this.needUploadArray.length} files...`)
@@ -173,13 +175,21 @@ class UploadToQiniuWebpackPlugin {
                         // console.log(respBody);
                     }
                 }
-                _this.writeLog()
-                _this.options.enabledRefresh && _this.refreshInClound(_this.needUploadArray || []);
+                if(_this.options.enabledRefresh){
+                    _this.refreshInClound(_this.needUploadArray || []);
+                } else {
+                    _this.writeLog()
+                    _this.callback()
+                }
             });
         } else {
             console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'There Is Not Have Extra File Need To Delete\r\n');
-            this.writeLog()
-            this.options.enabledRefresh && this.refreshInClound(this.needUploadArray || []);
+            if (this.options.enabledRefresh) {
+                this.refreshInClound(this.needUploadArray || []);
+            } else {
+                this.writeLog()
+                this.callback()
+            }
         }
 
     }
@@ -204,28 +214,36 @@ class UploadToQiniuWebpackPlugin {
 
     }
 
-    refreshInClound(needRefreshArr) {
+    refreshInClound(needRefreshArr = []) {
         let cdnManager = new qiniu.cdn.CdnManager(this.mac);
+        if(this.options.onlyRefreshHtml){
+            needRefreshArr = needRefreshArr.filter(item => path.extname(item) === '.html')
+        }
         const _this = this
         //  Can refresh 100 one time
-        needRefreshArr = _array.chunk(needRefreshArr, 100);
-        needRefreshArr.forEach((item, index) => {
+        let refreshQueue = _array.chunk(needRefreshArr, 100);
+        refreshQueue.forEach((item, index) => {
             item = item.map((it) => {
                 return this.options.publicPath + it.replace(this.options.uploadTaget + '/', '')
             });
             cdnManager.refreshUrls(item, function (err, respBody, respInfo) {
                 if (err) {
                     _this.allRefreshIsSuccess = false
-                    _this.failedObj.refreshArr = _this.failedObj.refreshArr.concat(item.map(it.replace(_this.options.uploadTaget + '/', '')))
+                    _this.failedObj.refreshArr = _this.failedObj.refreshArr.concat(item.map(it=>it.replace(_this.options.uploadTaget + '/', '')))
                     console.error('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Failed\r\n')
+
+                    if(_this.options.onlyRefreshHtml){
+                        throw new Error(err)
+                    }
                 }
                 if (respInfo.statusCode == 200) {
                     // let jsonBody = JSON.parse(respBody);
                     // console.log(jsonBody);
-                    console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Successful\r\n')
+                    console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Refresh Files Successful\r\n') 
                 }
-                if (index === needRefreshArr.length - 1) {
+                if (index === refreshQueue.length - 1) {
                     _this.writeLog()
+                    _this.callback()
                 }
             });
         })
