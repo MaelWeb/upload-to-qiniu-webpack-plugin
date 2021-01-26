@@ -77,8 +77,7 @@ class UploadToQiniuWebpackPlugin {
                 this.successUploadFilesData = JSON.parse(fs.readFileSync(path.resolve(_this.options.uploadLogPath, successUnloadLog), 'utf8'));
             }
         } catch (err) {}
-
-        (compiler.hooks ? compiler.hooks.done.tapAsync.bind(compiler.hooks.done, 'UploadToQiniuWebpackPlugin') : compiler.plugin.bind(compiler, 'done'))((stats, callback) => {
+        (compiler.hooks ? compiler.hooks.afterEmit.tapAsync.bind(compiler.hooks.afterEmit, 'UploadToQiniuWebpackPlugin') : compiler.plugin.bind(compiler, 'afterEmit'))((compilation, callback) => {
             _this.callback = callback.bind(this);
 
             console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', 'Starting upload files to Qiniu clound ');
@@ -87,7 +86,6 @@ class UploadToQiniuWebpackPlugin {
                 _this.fileCount = paths.length;
 
                 console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', `Comparing ${_this.fileCount} files...`);
-
                 paths.forEach(item => {
                     let key = path.relative(_this.options.uploadTaget, item);
                     if (_this.successUploadFilesData[key]) {
@@ -222,6 +220,8 @@ class UploadToQiniuWebpackPlugin {
         const _this = this
         //  Can refresh 100 one time
         let refreshQueue = _array.chunk(needRefreshArr, 100);
+        
+        console.log('\x1b[2m%s\x1b[0m : ', '[UploadToQiniuWebpackPlugin]', `Refreshing ${needRefreshArr.length} files...`);
         refreshQueue.forEach((item, index) => {
             item = item.map((it) => {
                 return this.options.publicPath + it.replace(this.options.uploadTaget + '/', '')
