@@ -216,6 +216,7 @@ class UploadToQiniuWebpackPlugin {
         let cdnManager = new qiniu.cdn.CdnManager(this.mac);
         if(this.options.onlyRefreshHtml){
             needRefreshArr = needRefreshArr.filter(item => path.extname(item) === '.html')
+            needRefreshArr = [...needRefreshArr, ...needRefreshArr.map(item => `${path.dirname(item)}/`)]
         }
         const _this = this
         //  Can refresh 100 one time
