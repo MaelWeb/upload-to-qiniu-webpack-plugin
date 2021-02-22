@@ -56,7 +56,7 @@ Allowed values are as follows
 |**[`qiniuZone`](#)**|`{String}`|`null`| Your Qiniu zone code |
 |**[`enabledRefresh`](#)**|`{Boolean}`|`false`| Is enable refresh the file on Qiniu Clound after file upload|
 |**[`excludeHtml`](#)**|`{Boolean}`|`true`| Is exclude html file |
-|**[`onlyRefreshHtml`](#)**|`{Boolean}`|`false`| only refresh html file, throws an exception in the case of a failure. |
+|**[`onlyRefreshHtml`](#)**|`{Boolean}`|`false`| only refresh html file (eg: */demo/index.html + */demo/), throws an exception in the case of a failure. |
 |**[`prefixPath`](#)**|`{String}`| - | prefix path for the file |
 |**[`uploadLogPath`](#)**|`{String}`|[webpackConfig.context](https://webpack.js.org/configuration/entry-context/#context)|  Provide a directory where log file should be stored |
 |**[`uploadTaget`](#)**|`{String}`|[webpackConfig.output.path](https://webpack.js.org/configuration/output/#output-path)|The target file/folder to upload|
